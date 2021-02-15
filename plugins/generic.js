@@ -71,7 +71,7 @@ class Generic {
   // actually emulate end-user interaction by pressing the configured key and check whether
   // the DOM has changed a posteriori.
   async hasNextSlide() {
-    if (this.options.maxSlides && this.currentSlide >= this.options.maxSlides)
+    if (this.options.maxSlides && this.currentSlide >= this.options.maxSlides) {
       return false;
     }
     await this.page.keyboard.press(this.key);
