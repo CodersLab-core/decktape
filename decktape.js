@@ -390,17 +390,19 @@ async function printSlide(pdf, slide, context) {
 
   function parseXObject([name, entry], xObject) {
     const object = page.node.context.lookup(entry);
-    const subtype = object.dict.get(PDFName.of('Subtype'));
-    if (subtype === PDFName.of('Image')) {
-      const digest = crypto.createHash('SHA1').update(object.contents).digest('hex');
-      if (!context.pdfXObjects[digest]) {
-        context.pdfXObjects[digest] = entry;
+    if(object) {
+      const subtype = object.dict.get(PDFName.of('Subtype'));
+      if (subtype === PDFName.of('Image')) {
+        const digest = crypto.createHash('SHA1').update(object.contents).digest('hex');
+        if (!context.pdfXObjects[digest]) {
+          context.pdfXObjects[digest] = entry;
+        } else {
+          xObject.set(name, context.pdfXObjects[digest]);
+          pdf.context.delete(entry);
+        }
       } else {
-        xObject.set(name, context.pdfXObjects[digest]);
-        pdf.context.delete(entry);
+        parseResources(object.dict);
       }
-    } else {
-      parseResources(object.dict);
     }
   };
 
